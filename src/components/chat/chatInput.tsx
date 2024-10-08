@@ -6,7 +6,7 @@ import {
   serverTimestamp,
 } from "firebase/database"
 import { useEffect, useRef, useState } from "react"
-import { app } from "../../config"
+import { app } from "../../firebase/config"
 
 export const ChatInput = () => {
   const dbRef = useRef<Database | null>(null)
