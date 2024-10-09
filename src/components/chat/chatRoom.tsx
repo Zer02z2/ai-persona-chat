@@ -65,7 +65,7 @@ export const ChatRoom = ({
   return (
     <div className="h-full overflow-hidden">
       <div
-        className="h-full overflow-scroll max-h-[80vh]"
+        className="h-full overflow-y-scroll max-h-[80vh]"
         style={{ width: "calc(100% + 17px)" }}
         ref={chatRef}
       >
