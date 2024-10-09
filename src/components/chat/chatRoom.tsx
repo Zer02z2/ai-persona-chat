@@ -42,7 +42,9 @@ export const ChatRoom = ({
   }, [])
 
   useEffect(() => {
-    while (!chatRef.current) {}
+    while (!chatRef.current) {
+      // do nothing
+    }
     const div = chatRef.current
     if (div.scrollHeight > div.clientHeight) {
       div.scrollTo({ top: div.scrollHeight, behavior: "smooth" })

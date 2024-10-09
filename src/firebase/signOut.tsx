@@ -6,7 +6,9 @@ export const SignOut = () => {
     try {
       await signOut(appAuth)
       console.log("sign out successful")
-    } catch (error: any) {}
+    } catch (error: any) {
+      alert(error)
+    }
   }
   return (
     <div className="flex justify-end w-full">
