@@ -7,13 +7,19 @@ import {
   query,
   limitToLast,
 } from "firebase/database"
-import { app, Chat } from "../../firebase/config"
+import { app, Chat, User, Users } from "../../firebase/config"
 import { Fragment, useEffect, useRef, useState } from "react"
 import { ChatMessage } from "./chatMessage"
 
-export const ChatRoom = () => {
+export const ChatRoom = ({
+  users,
+  currentUser,
+}: {
+  users: Users | null
+  currentUser: User | null
+}) => {
   const dbRef = useRef<Database | null>(null)
-  const [chat, setChat] = useState<Chat[]>([])
+  const [chatHistory, setChatHistory] = useState<Chat[]>([])
 
   useEffect(() => {
     dbRef.current = getDatabase(app)
@@ -30,16 +36,27 @@ export const ChatRoom = () => {
     onValue(chatQuery, (snapshot) => {
       const data: { [name: string]: Chat } = snapshot.val()
       const chatArr: Chat[] = Object.values(data)
-      setChat(chatArr)
+      setChatHistory(chatArr)
     })
   }, [])
 
-  const chatMessages = chat.map((entry, index) => {
+  const chatMessages = chatHistory.map((chat, index) => {
+    if (!users) return
+    const user = users[chat.uid]
     return (
       <Fragment key={index}>
-        <ChatMessage props={entry} />
+        <ChatMessage chat={chat} user={user} isCurrentUser={false}/>
       </Fragment>
     )
   })
-  return <div>{chatMessages}</div>
+  return (
+    <div className="h-full overflow-hidden">
+      <div
+        className="h-full overflow-scroll max-h-[80vh]"
+        style={{ width: "calc(100% + 17px)" }}
+      >
+        {chatMessages}
+      </div>
+    </div>
+  )
 }
