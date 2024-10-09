@@ -1,11 +1,11 @@
-// import firebase from "firebase/compat/app"
-// import * as firebaseui from "firebaseui"
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth"
 import { useEffect, useRef } from "react"
-import { appAuth } from "./config"
+import { appAuth, User } from "./config"
+import { updateUser } from "../components/user/udateUser"
 
 export const SignIn = () => {
   const providerRef = useRef<GoogleAuthProvider | null>(null)
+
   useEffect(() => {
     providerRef.current = new GoogleAuthProvider()
   }, [])
@@ -14,14 +14,17 @@ export const SignIn = () => {
     if (!providerRef.current) return
     try {
       const result = await signInWithPopup(appAuth, providerRef.current)
-      const credential = GoogleAuthProvider.credentialFromResult(result)
-      const token = credential?.accessToken
       const user = result.user
+      const myUser: User = { name: user.displayName, uid: user.uid }
+      updateUser(myUser)
     } catch (error: any) {
       const errorCode = error.code
       const errorMessage = error.message
       const email = error.customData.email
       const credential = GoogleAuthProvider.credentialFromError(error)
+      alert(
+        `Error code: ${errorCode}.\nErorMessage: ${errorMessage}.\nEmail: ${email}.\nCredentail: ${credential}.`
+      )
     }
   }
 

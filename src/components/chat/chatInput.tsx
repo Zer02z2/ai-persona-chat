@@ -6,9 +6,9 @@ import {
   serverTimestamp,
 } from "firebase/database"
 import { useEffect, useRef, useState } from "react"
-import { app } from "../../firebase/config"
+import { app, User } from "../../firebase/config"
 
-export const ChatInput = () => {
+export const ChatInput = ({ user }: { user: User }) => {
   const dbRef = useRef<Database | null>(null)
   const [input, setInput] = useState<string>("")
 
@@ -20,13 +20,14 @@ export const ChatInput = () => {
     push(ref(dbRef.current, "ai-persona-chat/chatHistory"), {
       message: message,
       timeStamp: serverTimestamp(),
+      uid: user.uid,
     })
   }
   return (
-    <div className="flex rounded-sm bg-neutral-700">
+    <div className="flex h-12 rounded-sm bg-neutral-300">
       <input
         type="text"
-        className="w-full h-12 px-4 text-white bg-transparent focus:outline-none"
+        className="w-full h-full px-4 bg-transparent text-neutral-700 focus:outline-none"
         placeholder="Message"
         value={input}
         onChange={(e) => setInput(e.target.value)}
@@ -44,7 +45,7 @@ export const ChatInput = () => {
           setInput("")
         }}
       >
-        <img src="/send.svg" className="size-6"></img>
+        <img src="/send-dark.svg" className="size-6"></img>
       </div>
     </div>
   )

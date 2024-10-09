@@ -4,15 +4,16 @@ import {
   onValue,
   Database,
   orderByChild,
-  limitToFirst,
   query,
+  limitToLast,
 } from "firebase/database"
-import { app, Message } from "../../firebase/config"
-import { useEffect, useRef, useState } from "react"
+import { app, Chat } from "../../firebase/config"
+import { Fragment, useEffect, useRef, useState } from "react"
+import { ChatMessage } from "./chatMessage"
 
 export const ChatRoom = () => {
   const dbRef = useRef<Database | null>(null)
-  const [chat, setChat] = useState<string[]>([])
+  const [chat, setChat] = useState<Chat[]>([])
 
   useEffect(() => {
     dbRef.current = getDatabase(app)
@@ -21,16 +22,24 @@ export const ChatRoom = () => {
       return
     }
     const entriesRef = ref(dbRef.current, "ai-persona-chat/chatHistory")
-    const myQuery = query(
+    const chatQuery = query(
       entriesRef,
       orderByChild("timeStamp"),
-      limitToFirst(10)
+      limitToLast(10)
     )
-    onValue(myQuery, (snapshot) => {
-      const data: { [name: string]: Message } = snapshot.val()
-      const chatArr = Object.values(data).map((value) => value.message)
+    onValue(chatQuery, (snapshot) => {
+      const data: { [name: string]: Chat } = snapshot.val()
+      const chatArr: Chat[] = Object.values(data)
       setChat(chatArr)
     })
   }, [])
-  return <div></div>
+
+  const chatMessages = chat.map((entry, index) => {
+    return (
+      <Fragment key={index}>
+        <ChatMessage props={entry} />
+      </Fragment>
+    )
+  })
+  return <div>{chatMessages}</div>
 }

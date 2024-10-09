@@ -22,7 +22,8 @@ export interface User {
   uid: string | null
 }
 
-export interface Message {
+export interface Chat {
   message: string
   timeStamp: number
+  uid: string
 }

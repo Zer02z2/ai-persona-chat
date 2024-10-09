@@ -36,7 +36,7 @@ export default function App() {
       <section className="grid flex-none grid-cols-8 gap-10">
         <div className="col-span-2"></div>
         <div className="col-span-6">
-          {authState ? <ChatInput /> : <SignIn />}
+          {authState && user ? <ChatInput user={user} /> : <SignIn />}
         </div>
       </section>
     </div>
