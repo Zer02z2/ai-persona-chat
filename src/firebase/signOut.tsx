@@ -11,7 +11,10 @@ export const SignOut = () => {
   return (
     <div className="flex justify-end w-full">
       <div className="px-2 py-1 rounded-sm bg-neutral-900">
-        <button onClick={signOutSession} className="text-neutral-400">
+        <button
+          onClick={signOutSession}
+          className="font-medium text-neutral-400"
+        >
           Sign Out
         </button>
       </div>

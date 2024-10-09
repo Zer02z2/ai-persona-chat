@@ -29,8 +29,12 @@ export const SignIn = () => {
   }
 
   return (
-    <div>
-      <button onClick={signIn}>Sign in</button>
+    <div className="flex justify-end w-full">
+      <div className="px-2 py-1 rounded-sm bg-amber-200">
+        <button onClick={signIn} className="font-medium text-neutral-700">
+          Sign In
+        </button>
+      </div>
     </div>
   )
 }

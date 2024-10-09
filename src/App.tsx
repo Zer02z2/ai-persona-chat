@@ -35,14 +35,14 @@ export default function App() {
           <ChatRoom users={users} currentUser={user} />
         </div>
         <div className="flex flex-col justify-between col-span-2">
-          {authState ? <SignOut /> : <div />}
+          {authState ? <SignOut /> : <SignIn />}
           <Portrait />
         </div>
       </section>
       <section className="grid flex-none grid-cols-8 gap-10">
         <div className="col-span-2"></div>
         <div className="col-span-6">
-          {authState && user ? <ChatInput user={user} /> : <SignIn />}
+          <ChatInput user={user} />
         </div>
       </section>
     </div>

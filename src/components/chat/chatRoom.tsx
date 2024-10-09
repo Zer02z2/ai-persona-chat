@@ -42,7 +42,7 @@ export const ChatRoom = ({
   }, [])
 
   useEffect(() => {
-    if (!chatRef.current) return
+    while (!chatRef.current) {}
     const div = chatRef.current
     if (div.scrollHeight > div.clientHeight) {
       div.scrollTo({ top: div.scrollHeight, behavior: "smooth" })
@@ -62,6 +62,7 @@ export const ChatRoom = ({
       </Fragment>
     )
   })
+
   return (
     <div className="h-full overflow-hidden">
       <div

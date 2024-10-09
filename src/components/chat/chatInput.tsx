@@ -8,7 +8,7 @@ import {
 import { useEffect, useRef, useState } from "react"
 import { app, User } from "../../firebase/config"
 
-export const ChatInput = ({ user }: { user: User }) => {
+export const ChatInput = ({ user }: { user: User | null }) => {
   const dbRef = useRef<Database | null>(null)
   const [input, setInput] = useState<string>("")
 
@@ -16,12 +16,21 @@ export const ChatInput = ({ user }: { user: User }) => {
     dbRef.current = getDatabase(app)
   }, [])
   const sendChat = (message: string) => {
-    if (!dbRef.current) return
+    if (!(user && dbRef.current)) return
     push(ref(dbRef.current, "ai-persona-chat/chatHistory"), {
       message: message,
       timeStamp: serverTimestamp(),
       uid: user.uid,
     })
+  }
+  const handleClick = () => {
+    if (!user) {
+      alert("Sign in first")
+      return
+    }
+    if (!dbRef.current) return
+    sendChat(input)
+    setInput("")
   }
   return (
     <div className="flex h-12 rounded-sm bg-neutral-700">
@@ -32,18 +41,13 @@ export const ChatInput = ({ user }: { user: User }) => {
         value={input}
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={(e) => {
-          if (e.key !== "Enter" || !dbRef.current) return
-          sendChat(input)
-          setInput("")
+          if (e.key !== "Enter") return
+          handleClick()
         }}
       ></input>
       <div
         className="grid h-full px-4 cursor-pointer place-items-center"
-        onClick={() => {
-          if (!dbRef.current) return
-          sendChat(input)
-          setInput("")
-        }}
+        onClick={handleClick}
       >
         <img src="/send.svg" className="size-6"></img>
       </div>
