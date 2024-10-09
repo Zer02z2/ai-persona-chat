@@ -4,6 +4,8 @@ import { onAuthStateChanged } from "firebase/auth"
 import { SignIn } from "./firebase/signIn"
 import { appAuth, User } from "./firebase/config"
 import { SignOut } from "./firebase/signOut"
+import { Portrait } from "./components/user/portrait"
+import { ChatRoom } from "./components/chat/chatRoom"
 
 export default function App() {
   const [authState, setAuthState] = useState<boolean>(false)
@@ -18,19 +20,25 @@ export default function App() {
     return unsubscribe
   }, [])
   return (
-    <div className="w-full h-screen px-10 font-sans max-w-screen-2xl">
-      <div className="grid h-full grid-cols-3">
-        <div className="col-span-1"></div>
-        <div className="flex flex-col col-span-2 pb-6 gap-y-6">
-          <div className="grid h-full grid-cols-2">
-            <div></div>
-            <div className="border border-red-500">
-              {authState ? <SignOut /> : <></>}
-            </div>
-          </div>
+    <div className="flex flex-col w-full h-screen p-6 font-sans max-w-screen-2xl">
+      <section className="grid flex-1 grid-cols-8 gap-10 mb-6">
+        <div className="col-span-2">
+          <Portrait />
+        </div>
+        <div className="col-span-4">
+          <ChatRoom />
+        </div>
+        <div className="flex flex-col justify-between col-span-2">
+          {authState ? <SignOut /> : <div />}
+          <Portrait />
+        </div>
+      </section>
+      <section className="grid flex-none grid-cols-8 gap-10">
+        <div className="col-span-2"></div>
+        <div className="col-span-6">
           {authState ? <ChatInput /> : <SignIn />}
         </div>
-      </div>
+      </section>
     </div>
   )
 }

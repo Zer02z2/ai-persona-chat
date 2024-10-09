@@ -18,6 +18,11 @@ const appAuth = getAuth(app)
 export { app, appAuth }
 
 export interface User {
-  name: string
-  uid: string
+  name: string | null
+  uid: string | null
+}
+
+export interface Message {
+  message: string
+  timeStamp: number
 }

@@ -9,7 +9,7 @@ export const SignOut = () => {
     } catch (error: any) {}
   }
   return (
-    <div>
+    <div className="flex justify-end w-full">
       <button onClick={signOutSession}>Sign Out</button>
     </div>
   )
