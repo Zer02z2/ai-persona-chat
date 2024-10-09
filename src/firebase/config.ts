@@ -14,7 +14,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 const appAuth = getAuth(app)
-
+console.log("why")
 export { app, appAuth }
 
 export interface User {
