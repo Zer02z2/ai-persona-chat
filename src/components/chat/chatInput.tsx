@@ -24,10 +24,10 @@ export const ChatInput = ({ user }: { user: User }) => {
     })
   }
   return (
-    <div className="flex h-12 rounded-sm bg-neutral-300">
+    <div className="flex h-12 rounded-sm bg-neutral-700">
       <input
         type="text"
-        className="w-full h-full px-4 bg-transparent text-neutral-700 focus:outline-none"
+        className="w-full h-full px-4 bg-transparent text-neutral-300 focus:outline-none"
         placeholder="Message"
         value={input}
         onChange={(e) => setInput(e.target.value)}
@@ -45,7 +45,7 @@ export const ChatInput = ({ user }: { user: User }) => {
           setInput("")
         }}
       >
-        <img src="/send-dark.svg" className="size-6"></img>
+        <img src="/send.svg" className="size-6"></img>
       </div>
     </div>
   )

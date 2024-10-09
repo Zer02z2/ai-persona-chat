@@ -20,6 +20,7 @@ export const ChatRoom = ({
 }) => {
   const dbRef = useRef<Database | null>(null)
   const [chatHistory, setChatHistory] = useState<Chat[]>([])
+  const chatRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     dbRef.current = getDatabase(app)
@@ -31,7 +32,7 @@ export const ChatRoom = ({
     const chatQuery = query(
       entriesRef,
       orderByChild("timeStamp"),
-      limitToLast(10)
+      limitToLast(100)
     )
     onValue(chatQuery, (snapshot) => {
       const data: { [name: string]: Chat } = snapshot.val()
@@ -40,12 +41,24 @@ export const ChatRoom = ({
     })
   }, [])
 
+  useEffect(() => {
+    if (!chatRef.current) return
+    const div = chatRef.current
+    if (div.scrollHeight > div.clientHeight) {
+      div.scrollTo({ top: div.scrollHeight, behavior: "smooth" })
+    }
+  }, [chatHistory])
+
   const chatMessages = chatHistory.map((chat, index) => {
     if (!users) return
     const user = users[chat.uid]
     return (
       <Fragment key={index}>
-        <ChatMessage chat={chat} user={user} isCurrentUser={false}/>
+        <ChatMessage
+          chat={chat}
+          user={user}
+          isCurrentUser={user.uid === currentUser?.uid}
+        />
       </Fragment>
     )
   })
@@ -54,6 +67,7 @@ export const ChatRoom = ({
       <div
         className="h-full overflow-scroll max-h-[80vh]"
         style={{ width: "calc(100% + 17px)" }}
+        ref={chatRef}
       >
         {chatMessages}
       </div>

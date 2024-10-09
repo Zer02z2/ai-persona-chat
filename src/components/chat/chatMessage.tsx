@@ -11,11 +11,18 @@ export const ChatMessage = ({
 }) => {
   const { message } = chat
   const { name } = user
+  const alignment = isCurrentUser ? "flex-row-reverse" : "flex-row"
+  const textAlignment = isCurrentUser ? "items-end" : "items-start"
   return (
-    <div className="p-2">
-      <p className="pb-1 text-xs text-neutral-500">{name}</p>
-      <div className="inline-block px-2 py-1 rounded-sm bg-neutral-300">
-        <p className="text-neutral-700">{message}</p>
+    <div className={`flex w-full gap-4 p-4 ${alignment}`}>
+      <div className="rounded-sm size-10 bg-neutral-300"></div>
+      <div className={`flex flex-col ${textAlignment}`}>
+        {!isCurrentUser && (
+          <p className="pb-2 text-xs text-neutral-300">{name}</p>
+        )}
+        <div className="inline-block px-3 py-2 rounded-sm bg-neutral-700">
+          <p className="text-neutral-300">{message}</p>
+        </div>
       </div>
     </div>
   )
