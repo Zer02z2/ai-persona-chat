@@ -3,7 +3,6 @@ import { User } from "../../firebase/config"
 
 export const Portrait = ({ user }: { user: User | null }) => {
   //const [imgSrc, setImgSrc] = useState<string>("/questionMark.jpg")
-  console.log(user)
 
   return (
     <div className="w-full aspect-[5/7] bg-neutral-500 rounded-sm">

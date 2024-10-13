@@ -46,7 +46,7 @@ export const ChatRoom = ({
       // do nothing
     }
     const div = chatRef.current
-    if (div.scrollHeight > div.clientHeight) {
+    if (div.scrollHeight >= div.clientHeight) {
       div.scrollTo({ top: div.scrollHeight, behavior: "smooth" })
     }
   }, [chatHistory])
