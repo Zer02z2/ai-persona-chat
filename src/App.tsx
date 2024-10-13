@@ -7,7 +7,7 @@ import { SignOut } from "./firebase/signOut"
 import { Portrait } from "./components/user/portrait"
 import { ChatRoom } from "./components/chat/chatRoom"
 import { getDatabase, onValue, ref } from "firebase/database"
-// import { CreateUser } from "./components/user/createUser"
+import { CreateUser } from "./components/user/createUser"
 
 export default function App() {
   const [authState, setAuthState] = useState<boolean>(false)
@@ -46,7 +46,7 @@ export default function App() {
           <ChatInput user={user} />
         </div>
       </section>
-      {/* <CreateUser /> */}
+      <CreateUser />
     </div>
   )
 }
