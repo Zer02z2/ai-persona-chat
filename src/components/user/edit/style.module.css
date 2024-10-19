@@ -1,7 +1,7 @@
 .input {
   padding: 0.5rem 1rem;
   width: 49%;
-  @apply rounded-sm bg-neutral-900 text-neutral-200;
+  @apply rounded-md bg-neutral-900 text-neutral-200;
 }
 .input:focus {
   outline: none;
@@ -9,5 +9,5 @@
 
 .button {
   padding: 0.2rem 1rem;
-  @apply font-medium rounded-sm text-neutral-800;
+  @apply font-medium rounded-full text-neutral-900;
 }

@@ -119,7 +119,7 @@ export const initialPrompt = (params: { language: string }): Data["text"] => {
 }
 
 export const imagePrompt = (input: string): Data["image"] => {
-  const prompt = `${input} hd, hand-drawn, Studio Ghibli`
+  const prompt = `${input} hd, realistic`
   return {
     type: "image",
     data: {

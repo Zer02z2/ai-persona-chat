@@ -18,8 +18,10 @@ const appAuth = getAuth(app)
 export { app, appAuth }
 
 export interface User {
-  name: string | null
-  uid: string | null
+  name?: string | null
+  uid: string
+  persona?: [string, string] | null
+  profileImage?: string | null
 }
 
 export interface Users {

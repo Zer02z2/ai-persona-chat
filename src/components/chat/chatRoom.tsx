@@ -36,23 +36,23 @@ export const ChatRoom = ({
     )
     onValue(chatQuery, (snapshot) => {
       const data: { [name: string]: Chat } = snapshot.val()
+      if (!data) return
       const chatArr: Chat[] = Object.values(data)
       setChatHistory(chatArr)
     })
   }, [])
 
   useEffect(() => {
-    while (!chatRef.current) {
-      // do nothing
-    }
+    if (!chatRef.current) return
     const div = chatRef.current
     if (div.scrollHeight >= div.clientHeight) {
       div.scrollTo({ top: div.scrollHeight, behavior: "smooth" })
     }
-  }, [chatHistory])
+  }, [chatRef.current?.scrollHeight])
 
   const chatMessages = chatHistory.map((chat, index) => {
     if (!users) return
+    if (!users[chat.uid]) return
     const user = users[chat.uid]
     return (
       <Fragment key={index}>

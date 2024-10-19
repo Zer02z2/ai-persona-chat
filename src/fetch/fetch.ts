@@ -28,17 +28,14 @@ export const fetchData = async (
           .join("")
           .match(/\+([^+]+)\+/)[1]
           .trim()
-        console.log("got text")
         return result
       } catch (error) {
         console.log(error)
         break
       }
-
     case "image":
       try {
         const result = parsedResponse.output
-        console.log("got image")
         return result
       } catch (error) {
         console.log(error)
