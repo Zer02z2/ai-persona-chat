@@ -14,6 +14,7 @@ export const ChatMessage = ({
   const alignment = isCurrentUser ? "flex-row-reverse" : "flex-row"
   const textAlignment = isCurrentUser ? "items-end" : "items-start"
   const bgColor = isCurrentUser ? "bg-neutral-900" : "bg-neutral-700"
+
   return (
     <div className={`flex w-full gap-4 p-4 ${alignment}`}>
       <div className="rounded-sm size-10 bg-neutral-300"></div>

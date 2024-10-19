@@ -1,48 +1,15 @@
-import {
-  choicePrompt,
-  Data,
-  imagePrompt,
-  initialPrompt,
-  storyPrompt,
-  translatePrompt,
-} from "./prompts"
+import { Data, imagePrompt } from "./prompts"
 
 const url = "https://replicate-api-proxy.glitch.me/create_n_get/"
 
-export const getOptions = async (
-  input: string,
-  params: { mode: "init" | "update"; language: string }
-) => {
-  const getShortChoice = async () => {
-    const data =
-      params.mode === "init"
-        ? initialPrompt({ language: params.language })
-        : storyPrompt(input, { language: params.language })
-    const fullChoice = await fetchData(data)
-    const shortChoice = await fetchData(
-      choicePrompt(fullChoice, { language: params.language })
-    )
-    return { fullChoice: fullChoice, shortChoice: shortChoice }
-  }
-  const options = await Promise.all(
-    Array.from({ length: 3 }).map(() => getShortChoice())
-  )
-  return options
-}
-
-export const getImage = async (input: string, params: { language: string }) => {
-  const englishPrompt =
-    params.language === "English"
-      ? input
-      : await fetchData(translatePrompt(input))
-  const shortPrompt = await fetchData(
-    choicePrompt(englishPrompt, { language: "English" })
-  )
-  const src = await fetchData(imagePrompt(shortPrompt))
+export const getImage = async (input: string) => {
+  const src = await fetchData(imagePrompt(input))
   return src
 }
 
-export const fetchData = async (data: Data[keyof Data]): Promise<string> => {
+export const fetchData = async (
+  data: Data[keyof Data]
+): Promise<string | undefined> => {
   const options = {
     method: "POST",
     headers: {
@@ -51,27 +18,31 @@ export const fetchData = async (data: Data[keyof Data]): Promise<string> => {
     },
     body: JSON.stringify(data["data"]),
   }
-  try {
-    console.log("Start fetching")
-    const response = await fetch(url, options)
-    const parsedResponse = await response.json()
-    let result: string
-    switch (data["type"]) {
-      case "text":
-        result = parsedResponse.output
+  console.log("Start fetching")
+  const response = await fetch(url, options)
+  const parsedResponse = await response.json()
+  switch (data["type"]) {
+    case "text":
+      try {
+        const result = parsedResponse.output
           .join("")
           .match(/\+([^+]+)\+/)[1]
           .trim()
-        console.log("Got text!")
+        console.log("got text")
+        return result
+      } catch (error) {
+        console.log(error)
         break
-      case "image":
-        result = parsedResponse.output
-        console.log("Got image!")
+      }
+
+    case "image":
+      try {
+        const result = parsedResponse.output
+        console.log("got image")
+        return result
+      } catch (error) {
+        console.log(error)
         break
-    }
-    return result
-  } catch {
-    console.log("Trying again...")
-    return fetchData(data)
+      }
   }
 }
