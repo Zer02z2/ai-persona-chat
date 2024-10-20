@@ -6,7 +6,12 @@ export const Portrait = ({ user }: { user: User | null }) => {
 
   return (
     <div className="w-full aspect-[5/7] bg-neutral-500 rounded-sm">
-      <img src="/questionMark.jpg" className="object-cover min-h-full"></img>
+      <img
+        src={
+          user && user.profileImage ? user.profileImage : "/questionMark.jpg"
+        }
+        className="object-cover min-h-full"
+      ></img>
     </div>
   )
 }

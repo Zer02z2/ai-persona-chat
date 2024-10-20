@@ -7,5 +7,6 @@ export const updateUser = (user: User) => {
     uid: user.uid,
     name: user.name,
     persona: user.persona,
+    profileImage: user.profileImage,
   })
 }

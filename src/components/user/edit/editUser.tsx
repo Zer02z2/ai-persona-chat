@@ -6,42 +6,61 @@ import { storage, User } from "../../../firebase/config"
 import { updateUser } from "../udateUser"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 
+interface Usables {
+  input: boolean
+  generateButton: boolean
+  saveButton: boolean
+  loader: boolean
+}
+
 export const EditUser = ({ user }: { user: User }) => {
-  const [readyToGenerate, setReadyToGenerate] = useState<boolean>(false)
-  const [savable, setSavable] = useState<boolean>(false)
   const [imageUrl, setImageUrl] = useState<string | null | undefined>(
     user.profileImage
   )
   const [inputA, setInputA] = useState<string>("")
   const [inputB, setInputB] = useState<string>("")
-  const [isFetching, setIsFetching] = useState<boolean>(false)
+  const [usables, setUsables] = useState<Usables>({
+    input: true,
+    generateButton: false,
+    saveButton: false,
+    loader: false,
+  })
+
+  const lockAllFields = () => {
+    setUsables({
+      input: false,
+      generateButton: false,
+      saveButton: false,
+      loader: true,
+    })
+  }
+  const unlockAllFields = () => {
+    setUsables({
+      input: true,
+      generateButton: true,
+      saveButton: true,
+      loader: false,
+    })
+  }
 
   const fetchProfileImage = async () => {
-    if (!readyToGenerate) return
     const input = inputA + " " + inputB
-    setIsFetching(true)
-    setReadyToGenerate(false)
-    setSavable(false)
+    lockAllFields()
     const url = await getImage(input)
-    setIsFetching(false)
-    setReadyToGenerate(true)
+    unlockAllFields()
     if (!url) {
+      setUsables({ ...usables, saveButton: false })
       alert("Please try again.")
       return
     }
     setImageUrl(url)
-    setSavable(true)
   }
 
   const checkInput = () => {
     const filteredStringA = inputA.replace(/[^a-zA-Z]/g, "")
     const filteredStringB = inputB.replace(/[^a-zA-Z]/g, "")
-    if (filteredStringA.length > 0 && filteredStringB.length > 0) {
-      setReadyToGenerate(true)
-    } else {
-      setReadyToGenerate(false)
-    }
-    setSavable(false)
+    const inputValid = filteredStringA.length > 0 && filteredStringB.length > 0
+    setUsables({ ...usables, generateButton: inputValid, saveButton: false })
   }
 
   const saveChanges = async () => {
@@ -49,19 +68,31 @@ export const EditUser = ({ user }: { user: User }) => {
       alert("Please generate profile image first.")
       return
     }
+    lockAllFields()
     const file = await getImageFile(imageUrl, user.uid)
-    if (!file) return
+    if (!file) {
+      unlockAllFields()
+      alert("Please try again.")
+      return
+    }
     console.log(file)
     const uploadRef = ref(storage, `ai-persona-chat/${user.uid}/profile-image`)
-    const snapshot = await uploadBytes(uploadRef, file)
-    const url = await getDownloadURL(snapshot.ref)
-    console.log(url)
-    const userInfo: User = {
-      uid: user.uid,
-      name: user.name,
-      persona: [inputA, inputB],
+    try {
+      const snapshot = await uploadBytes(uploadRef, file)
+      const url = await getDownloadURL(snapshot.ref)
+      console.log(url)
+      const userInfo: User = {
+        uid: user.uid,
+        name: user.name,
+        persona: [inputA, inputB],
+        profileImage: url,
+      }
+      updateUser(userInfo)
+    } catch (error) {
+      console.log(error)
+      alert("Please try again")
     }
-    updateUser(userInfo)
+    unlockAllFields()
   }
 
   return (
@@ -86,7 +117,7 @@ export const EditUser = ({ user }: { user: User }) => {
               setInputA(e.target.value)
               checkInput()
             }}
-            disabled={isFetching}
+            disabled={!usables.input}
           ></input>
           <input
             type="text"
@@ -97,16 +128,16 @@ export const EditUser = ({ user }: { user: User }) => {
               setInputB(e.target.value)
               checkInput()
             }}
-            disabled={isFetching}
+            disabled={!usables.input}
           ></input>
         </div>
         <div className="relative flex items-center justify-end gap-2">
-          {isFetching ? <Loader /> : <></>}
+          {usables.loader ? <Loader /> : <></>}
           <button
             className={`${
-              readyToGenerate
+              usables.generateButton
                 ? "bg-amber-300 cursor-pointer"
-                : "bg-neutral-300 cursor-default"
+                : "bg-neutral-300 cursor-default pointer-events-none"
             } ${styles.button}`}
             onClick={fetchProfileImage}
           >
@@ -114,9 +145,9 @@ export const EditUser = ({ user }: { user: User }) => {
           </button>
           <button
             className={`${
-              savable
+              usables.saveButton
                 ? "bg-green-500 cursor-pointer"
-                : "bg-neutral-300 cursor-default"
+                : "bg-neutral-300 cursor-default pointer-events-none"
             } ${styles.button}`}
             onClick={saveChanges}
           >
