@@ -1,5 +1,5 @@
 import { signInWithPopup } from "firebase/auth"
-import { GoogleAuthProvider } from "firebase/auth/web-extension"
+import { GoogleAuthProvider } from "firebase/auth"
 import { appAuth } from "./config"
 
 export const signIn = async () => {
@@ -11,8 +11,9 @@ export const signIn = async () => {
     const errorMessage = error.message
     const email = error.customData.email
     const credential = GoogleAuthProvider.credentialFromError(error)
-    alert(
+    console.log(
       `Error code: ${errorCode}.\nErorMessage: ${errorMessage}.\nEmail: ${email}.\nCredentail: ${credential}.`
     )
+    alert("Log in failed.")
   }
 }

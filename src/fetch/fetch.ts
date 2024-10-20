@@ -7,6 +7,18 @@ export const getImage = async (input: string) => {
   return src
 }
 
+export const getImageFile = async (src: string, fileName: string) => {
+  try {
+    const response = await fetch(src)
+    const blob = await response.blob()
+    const file = new File([blob], fileName, { type: blob.type })
+    return file
+  } catch (error) {
+    console.log(error)
+    alert("Fail to get image file.")
+  }
+}
+
 export const fetchData = async (
   data: Data[keyof Data]
 ): Promise<string | undefined> => {

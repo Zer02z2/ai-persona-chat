@@ -1,14 +1,17 @@
 import { useState } from "react"
 import styles from "./style.module.css"
-import { getImage } from "../../../fetch/fetch"
+import { getImage, getImageFile } from "../../../fetch/fetch"
 import { Loader } from "../../loader/loader"
-import { User } from "../../../firebase/config"
+import { storage, User } from "../../../firebase/config"
 import { updateUser } from "../udateUser"
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 
 export const EditUser = ({ user }: { user: User }) => {
   const [readyToGenerate, setReadyToGenerate] = useState<boolean>(false)
   const [savable, setSavable] = useState<boolean>(false)
-  const [imageUrl, setImageUrl] = useState<string | null>()
+  const [imageUrl, setImageUrl] = useState<string | null | undefined>(
+    user.profileImage
+  )
   const [inputA, setInputA] = useState<string>("")
   const [inputB, setInputB] = useState<string>("")
   const [isFetching, setIsFetching] = useState<boolean>(false)
@@ -41,7 +44,18 @@ export const EditUser = ({ user }: { user: User }) => {
     setSavable(false)
   }
 
-  const saveChanges = () => {
+  const saveChanges = async () => {
+    if (!imageUrl) {
+      alert("Please generate profile image first.")
+      return
+    }
+    const file = await getImageFile(imageUrl, user.uid)
+    if (!file) return
+    console.log(file)
+    const uploadRef = ref(storage, `ai-persona-chat/${user.uid}/profile-image`)
+    const snapshot = await uploadBytes(uploadRef, file)
+    const url = await getDownloadURL(snapshot.ref)
+    console.log(url)
     const userInfo: User = {
       uid: user.uid,
       name: user.name,
