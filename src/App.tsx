@@ -16,33 +16,29 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null)
   const [users, setUsers] = useState<Users | null>(null)
   const [editMode, setEditMode] = useState<boolean>(false)
+  const [initMode, setInitMode] = useState<boolean>(true)
 
-  const handleAuthState = async () => {
-    if (!user) {
-      setAuthState(false)
+  const handleUserState = async () => {
+    if (!(user && users)) {
       return
     }
-    if (!users) {
-      await signOutSession()
-      setAuthState(false)
-      alert("Sign in failed, please try again.")
-      return
-    }
-    setAuthState(true)
     if (
       users[user.uid] &&
       users[user.uid].persona &&
       users[user.uid].profileImage
     ) {
       setUser(users[user.uid])
+      setInitMode(false)
       return
     }
+    setInitMode(true)
     setEditMode(true)
   }
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(appAuth, (user) => {
       setUser(user ? { uid: user.uid, name: user.displayName } : null)
+      setAuthState(user ? true : false)
     })
     const db = getDatabase(app)
     onValue(ref(db, "ai-persona-chat/users"), (snapshot) => {
@@ -53,7 +49,7 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    handleAuthState()
+    handleUserState()
   }, [user, users])
 
   return (
