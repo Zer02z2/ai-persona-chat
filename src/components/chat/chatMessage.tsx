@@ -17,7 +17,9 @@ export const ChatMessage = ({
 
   return (
     <div className={`flex w-full gap-4 p-4 ${alignment}`}>
-      <div className="rounded-sm size-10 bg-neutral-300"></div>
+      {!isCurrentUser && (
+        <div className="rounded-sm size-10 bg-neutral-300"></div>
+      )}
       <div className={`flex flex-col ${textAlignment}`}>
         {!isCurrentUser && (
           <p className="pb-2 text-xs text-neutral-300">{name}</p>

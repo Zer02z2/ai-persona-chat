@@ -5,7 +5,7 @@ export const Portrait = ({ user }: { user: User | null }) => {
   //const [imgSrc, setImgSrc] = useState<string>("/questionMark.jpg")
 
   return (
-    <div className="w-full aspect-[5/7] bg-neutral-500 rounded-sm">
+    <div className="w-full aspect-[5/7] bg-neutral-500 rounded-sm overflow-hidden">
       <img
         src={
           user && user.profileImage ? user.profileImage : "/questionMark.jpg"
