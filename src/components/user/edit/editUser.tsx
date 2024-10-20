@@ -1,11 +1,10 @@
 import { useState } from "react"
 import styles from "./style.module.css"
-import { getImage, getImageFile } from "../../../fetch/fetch"
+import { getImage } from "../../../fetch/fetch"
 import { Loader } from "../../loader/loader"
-import { storage, User } from "../../../firebase/config"
-import { updateUser } from "../udateUser"
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
+import { User } from "../../../firebase/config"
 import { InputFields } from "./inputFields"
+import { saveChanges } from "./saveChanges"
 
 interface Usables {
   input: boolean
@@ -57,43 +56,27 @@ export const EditUser = ({ user }: { user: User }) => {
     setImageUrl(url)
   }
 
-  const checkInput = () => {
-    const filteredStringA = inputA.replace(/[^a-zA-Z]/g, "")
-    const filteredStringB = inputB.replace(/[^a-zA-Z]/g, "")
-    const inputValid = filteredStringA.length > 0 && filteredStringB.length > 0
-    setUsables({ ...usables, generateButton: inputValid, saveButton: false })
-  }
-
-  const saveChanges = async () => {
+  const handleSave = async () => {
     if (!imageUrl) {
       alert("Please generate profile image first.")
       return
     }
     lockAllFields()
-    const file = await getImageFile(imageUrl, user.uid)
-    if (!file) {
-      unlockAllFields()
-      alert("Please try again.")
-      return
-    }
-    console.log(file)
-    const uploadRef = ref(storage, `ai-persona-chat/${user.uid}/profile-image`)
-    try {
-      const snapshot = await uploadBytes(uploadRef, file)
-      const url = await getDownloadURL(snapshot.ref)
-      console.log(url)
-      const userInfo: User = {
-        uid: user.uid,
-        name: user.name,
-        persona: [inputA, inputB],
-        profileImage: url,
-      }
-      updateUser(userInfo)
-    } catch (error) {
-      console.log(error)
-      alert("Please try again")
-    }
+    await saveChanges({
+      props: {
+        imageUrl: imageUrl,
+        inputs: [inputA, inputB],
+        user: user,
+      },
+    })
     unlockAllFields()
+  }
+
+  const checkInput = () => {
+    const filteredStringA = inputA.replace(/[^a-zA-Z]/g, "")
+    const filteredStringB = inputB.replace(/[^a-zA-Z]/g, "")
+    const inputValid = filteredStringA.length > 0 && filteredStringB.length > 0
+    setUsables({ ...usables, generateButton: inputValid, saveButton: false })
   }
 
   const updateInput = {
@@ -145,7 +128,7 @@ export const EditUser = ({ user }: { user: User }) => {
                 ? "bg-green-500 cursor-pointer"
                 : "bg-neutral-300 cursor-default pointer-events-none"
             } ${styles.button}`}
-            onClick={saveChanges}
+            onClick={handleSave}
           >
             Save
           </button>
