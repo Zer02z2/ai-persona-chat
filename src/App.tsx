@@ -36,7 +36,7 @@ export default function App() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(appAuth, (user) => {
-      setUser(user ? { uid: user.uid } : null)
+      setUser(user ? { uid: user.uid, name: user.displayName } : null)
     })
     const db = getDatabase(app)
     onValue(ref(db, "ai-persona-chat/users"), (snapshot) => {
@@ -79,7 +79,7 @@ export default function App() {
           {authState && <ChatInput user={user} />}
         </div>
       </section>
-      {editMode && <EditUser />}
+      {editMode && user && <EditUser user={user} />}
     </div>
   )
 }

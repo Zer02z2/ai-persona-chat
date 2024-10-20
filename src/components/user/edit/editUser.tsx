@@ -2,8 +2,10 @@ import { useState } from "react"
 import styles from "./style.module.css"
 import { getImage } from "../../../fetch/fetch"
 import { Loader } from "../../loader/loader"
+import { User } from "../../../firebase/config"
+import { updateUser } from "../udateUser"
 
-export const EditUser = () => {
+export const EditUser = ({ user }: { user: User }) => {
   const [readyToGenerate, setReadyToGenerate] = useState<boolean>(false)
   const [savable, setSavable] = useState<boolean>(false)
   const [imageUrl, setImageUrl] = useState<string | null>()
@@ -37,6 +39,15 @@ export const EditUser = () => {
       setReadyToGenerate(false)
     }
     setSavable(false)
+  }
+
+  const saveChanges = () => {
+    const userInfo: User = {
+      uid: user.uid,
+      name: user.name,
+      persona: [inputA, inputB],
+    }
+    updateUser(userInfo)
   }
 
   return (
@@ -93,6 +104,7 @@ export const EditUser = () => {
                 ? "bg-green-500 cursor-pointer"
                 : "bg-neutral-300 cursor-default"
             } ${styles.button}`}
+            onClick={saveChanges}
           >
             Save
           </button>

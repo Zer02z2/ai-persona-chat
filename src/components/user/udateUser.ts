@@ -6,5 +6,6 @@ export const updateUser = (user: User) => {
   set(ref(db, `ai-persona-chat/users/${user.uid}`), {
     uid: user.uid,
     name: user.name,
+    persona: user.persona,
   })
 }
