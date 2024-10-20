@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { ChatInput } from "./components/chat/chatInput"
-import { onAuthStateChanged } from "firebase/auth"
+import { onAuthStateChanged, UserInfo } from "firebase/auth"
 import { SignIn } from "./components/user/signIn"
 import { app, appAuth, User, Users } from "./firebase/config"
 import { SignOut } from "./components/user/signOut"
@@ -17,35 +17,37 @@ export default function App() {
   const [users, setUsers] = useState<Users | null>(null)
   const [editMode, setEditMode] = useState<boolean>(false)
 
+  const handleAuthState = () => {
+    if (!(user && users)) {
+      setAuthState(false)
+      return
+    }
+    setAuthState(true)
+    if (
+      users[user.uid] &&
+      users[user.uid].persona &&
+      users[user.uid].profileImage
+    ) {
+      setUser(users[user.uid])
+      return
+    }
+    setEditMode(true)
+  }
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(appAuth, (user) => {
-      if (!user || !users) {
-        setUser(null)
-        return
-      }
-      if (users[user.uid]) {
-        setUser(users[user.uid])
-      } else {
-        updateUser({ name: user.displayName, uid: user.uid })
-      }
+      setUser(user ? { uid: user.uid } : null)
     })
     const db = getDatabase(app)
     onValue(ref(db, "ai-persona-chat/users"), (snapshot) => {
       const data: Users = snapshot.val()
-      console.log(data)
       setUsers(data)
     })
     return unsubscribe
   }, [])
 
   useEffect(() => {
-    if (!(user && users)) {
-      setAuthState(false)
-      return
-    }
-    if (users[user.uid]) {
-      setAuthState(true)
-    }
+    handleAuthState()
   }, [user, users])
 
   return (

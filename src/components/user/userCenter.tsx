@@ -7,7 +7,6 @@ export const UserCenter = ({
   user: User | null
   setEditMode: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
-  console.log("1: ", user)
   return (
     <div className="pb-4">
       {user && (
