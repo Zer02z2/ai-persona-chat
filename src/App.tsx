@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { ChatInput } from "./components/chat/chatInput"
-import { onAuthStateChanged, UserInfo } from "firebase/auth"
+import { onAuthStateChanged } from "firebase/auth"
 import { SignInButton } from "./components/user/signInButton"
 import { app, appAuth, User, Users } from "./firebase/config"
 import { SignOutButton } from "./components/user/signOutButton"
@@ -9,7 +9,6 @@ import { ChatRoom } from "./components/chat/chatRoom"
 import { getDatabase, onValue, ref } from "firebase/database"
 import { EditUser } from "./components/user/edit/editUser"
 import { UserCenter } from "./components/user/userCenter"
-import { updateUser } from "./components/user/udateUser"
 import { signOutSession } from "./firebase/signOut"
 
 export default function App() {

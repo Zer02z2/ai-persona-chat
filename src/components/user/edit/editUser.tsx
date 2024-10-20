@@ -5,6 +5,7 @@ import { Loader } from "../../loader/loader"
 import { storage, User } from "../../../firebase/config"
 import { updateUser } from "../udateUser"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
+import { InputFields } from "./inputFields"
 
 interface Usables {
   input: boolean
@@ -95,6 +96,17 @@ export const EditUser = ({ user }: { user: User }) => {
     unlockAllFields()
   }
 
+  const updateInput = {
+    A: (value: string) => {
+      setInputA(value)
+      checkInput()
+    },
+    B: (value: string) => {
+      setInputB(value)
+      checkInput()
+    },
+  }
+
   return (
     <div className="fixed top-0 left-0 grid w-screen h-screen place-items-center backdrop-blur-md">
       <div className="p-6 rounded-md bg-neutral-700 w-[30rem]">
@@ -107,30 +119,14 @@ export const EditUser = ({ user }: { user: User }) => {
             className="object-cover min-h-full"
           ></img>
         </div>
-        <div className="flex justify-between pb-10 text-lg font-medium text-neutral-600">
-          <input
-            type="text"
-            placeholder="adj."
-            className={styles.input}
-            value={inputA}
-            onChange={(e) => {
-              setInputA(e.target.value)
-              checkInput()
-            }}
-            disabled={!usables.input}
-          ></input>
-          <input
-            type="text"
-            placeholder="noun."
-            className={styles.input}
-            value={inputB}
-            onChange={(e) => {
-              setInputB(e.target.value)
-              checkInput()
-            }}
-            disabled={!usables.input}
-          ></input>
-        </div>
+        <InputFields
+          props={{
+            inputA: inputA,
+            inputB: inputB,
+            handleInputChange: updateInput,
+            usableState: usables.input,
+          }}
+        />
         <div className="relative flex items-center justify-end gap-2">
           {usables.loader ? <Loader /> : <></>}
           <button
