@@ -9,11 +9,11 @@ export const UserCenter = ({
 }) => {
   return (
     user && (
-      <div className="mb-4 bg-neutral-700">
-        <div className="flex items-center justify-end gap-x-4">
-          <h1 className="text-xl font-medium text-neutral-300">{user.name}</h1>
+      <div className="p-4 rounded-sm bg-none">
+        <div className="flex items-center justify-between gap-x-4">
+          <h1 className="text-xl font-medium text-neutral-300">{`${user.name}, the`}</h1>
           <button
-            className="px-2 py-0 font-normal rounded-full text-neutral-300 bg-neutral-700 hover:bg-blue-600"
+            className="px-2 py-0 font-normal rounded-full text-neutral-300 bg-neutral-600 hover:bg-blue-600"
             onClick={() => {
               setEditMode(true)
             }}
@@ -22,7 +22,7 @@ export const UserCenter = ({
           </button>
         </div>
         {user.persona && (
-          <h1 className="text-3xl font-medium text-end text-neutral-300">{`${user.persona[0]} ${user.persona[1]}`}</h1>
+          <h1 className="text-3xl font-medium text-neutral-300">{`${user.persona[0]} ${user.persona[1]}`}</h1>
         )}
       </div>
     )
