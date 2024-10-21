@@ -9,7 +9,6 @@ import { ChatRoom } from "./components/chat/chatRoom"
 import { getDatabase, onValue, ref } from "firebase/database"
 import { EditUser } from "./components/user/edit/editUser"
 import { UserCenter } from "./components/user/userCenter"
-import { signOutSession } from "./firebase/signOut"
 
 export default function App() {
   const [authState, setAuthState] = useState<boolean>(false)
@@ -17,6 +16,23 @@ export default function App() {
   const [users, setUsers] = useState<Users | null>(null)
   const [editMode, setEditMode] = useState<boolean>(false)
   const [initMode, setInitMode] = useState<boolean>(true)
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(appAuth, (user) => {
+      setUser(user ? { uid: user.uid, name: user.displayName } : null)
+      setAuthState(user ? true : false)
+    })
+    const db = getDatabase(app)
+    onValue(ref(db, "ai-persona-chat/users"), (snapshot) => {
+      const data: Users = snapshot.val()
+      setUsers(data)
+    })
+    return unsubscribe
+  }, [])
+
+  useEffect(() => {
+    handleUserState()
+  }, [user, users])
 
   const handleUserState = async () => {
     if (!(user && users)) {
@@ -35,22 +51,9 @@ export default function App() {
     setEditMode(true)
   }
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(appAuth, (user) => {
-      setUser(user ? { uid: user.uid, name: user.displayName } : null)
-      setAuthState(user ? true : false)
-    })
-    const db = getDatabase(app)
-    onValue(ref(db, "ai-persona-chat/users"), (snapshot) => {
-      const data: Users = snapshot.val()
-      setUsers(data)
-    })
-    return unsubscribe
-  }, [])
-
-  useEffect(() => {
-    handleUserState()
-  }, [user, users])
+  const exitEditMode = () => {
+    setEditMode(false)
+  }
 
   return (
     <div className="flex flex-col w-full h-screen p-6 font-sans max-w-screen-2xl">
@@ -81,7 +84,9 @@ export default function App() {
           {authState && <ChatInput user={user} />}
         </div>
       </section>
-      {editMode && user && <EditUser user={user} />}
+      {editMode && user && (
+        <EditUser user={user} isInit={initMode} handleClose={exitEditMode} />
+      )}
     </div>
   )
 }

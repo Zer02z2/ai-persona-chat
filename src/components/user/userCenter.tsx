@@ -8,22 +8,23 @@ export const UserCenter = ({
   setEditMode: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
   return (
-    <div className="pb-4">
-      {user && (
+    user && (
+      <div className="mb-4 bg-neutral-700">
         <div className="flex items-center justify-end gap-x-4">
           <h1 className="text-xl font-medium text-neutral-300">{user.name}</h1>
-          <div className="px-2 py-0 rounded-full cursor-pointer bg-neutral-700 hover:bg-blue-600">
-            <button
-              className="font-normal text-neutral-300"
-              onClick={() => {
-                setEditMode(true)
-              }}
-            >
-              edit
-            </button>
-          </div>
+          <button
+            className="px-2 py-0 font-normal rounded-full text-neutral-300 bg-neutral-700 hover:bg-blue-600"
+            onClick={() => {
+              setEditMode(true)
+            }}
+          >
+            edit
+          </button>
         </div>
-      )}
-    </div>
+        {user.persona && (
+          <h1 className="text-3xl font-medium text-end text-neutral-300">{`${user.persona[0]} ${user.persona[1]}`}</h1>
+        )}
+      </div>
+    )
   )
 }
